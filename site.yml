@@ -1,0 +1,6 @@
+---
+- import_playbook: userconfig.yml
+- import_playbook: docker.yml
+- import_playbook: kube.yml
+- import_playbook: master.yml
+- import_playbook: nodes.yml

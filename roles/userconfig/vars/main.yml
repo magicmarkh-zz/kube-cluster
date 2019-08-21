@@ -1,0 +1,4 @@
+---
+# vars file for userconfig
+vars:
+  kube_user_pass: ~/.kube_user_pass.txt

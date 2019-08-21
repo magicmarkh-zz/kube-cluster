@@ -1,0 +1,43 @@
+---
+# tasks file for kube
+- name: install pre-requisite packages for kubeadm, kubectl, and kubelet
+  apt: name={{item}} state=present
+  with_items:
+    - apt-transport-https
+    - curl
+
+- name: Remove swapfile from /etc/fstab
+  mount:
+    name: "{{ item }}"
+    fstype: swap
+    state: absent
+  with_items:
+    - swap
+    - none
+
+- name: Disable swap
+  command: swapoff -a
+  when: ansible_swaptotal_mb > 0
+
+- name: Add kube GPG Key
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+
+- name: add repository for kubernetes
+  lineinfile:
+    path: /etc/apt/sources.list.d/kubernetes.list
+    line: deb https://apt.kubernetes.io/ kubernetes-xenial main
+    create: yes
+
+- name: install kubeadm, kubectl, and kubelet
+  apt: name={{item}} state=present update_cache=yes
+  with_items:
+    - kubelet
+    - kubeadm
+    - kubectl
+  
+- name: hold kubeadm, kubectl, and kubelet
+  shell: |
+    apt-mark hold kubelet kubeadm kubectl
+  notify: restart kubelet

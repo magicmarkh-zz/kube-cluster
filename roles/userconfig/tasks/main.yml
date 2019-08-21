@@ -1,0 +1,6 @@
+---
+# tasks file for userconfig
+- name: add user for managing k8s
+  user:
+    name: kubeuser
+    password: kube_user_pass
